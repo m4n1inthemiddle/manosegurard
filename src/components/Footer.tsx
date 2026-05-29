@@ -25,7 +25,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Contacto</h4>
             <ul className="space-y-2">
               <li><a href="https://instagram.com" className="text-gray-400 hover:text-white">Instagram</a></li>
-              <li><a href="https://wa.me/18091234567" className="text-gray-400 hover:text-white">WhatsApp</a></li>
+              <li><a href="https://wa.me/18493587828" className="text-gray-400 hover:text-white">WhatsApp</a></li>
               <li><a href="mailto:info@manosegurard.com" className="text-gray-400 hover:text-white">info@manosegurard.com</a></li>
             </ul>
           </div>
