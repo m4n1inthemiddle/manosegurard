@@ -4,7 +4,7 @@ const nextConfig = {
     domains: ['images.unsplash.com', 'picsum.photos'],
   },
   typescript: {
-    ignoreBuildErrors: true,   // 🔥 Esto evita que el error de TypeScript detenga el build
+    ignoreBuildErrors: true,   // 🔥 Evita que errores de TS detengan el build
   },
 }
 
