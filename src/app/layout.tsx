@@ -10,13 +10,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'ManoSeguraRD - Técnicos confiables en RD',
   description: 'Encuentra técnicos verificados para tu hogar en República Dominicana',
+  
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <body className={inter.className}>

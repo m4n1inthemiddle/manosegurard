@@ -13,7 +13,7 @@ export default function TecnicosPage() {
   const [filteredTechs, setFilteredTechs] = useState<Technician[]>([])
   const [filters, setFilters] = useState({
     categoria: categoria || '',
-    ciudad: '',
+    provincia: '',
     rating: ''
   })
 
@@ -24,8 +24,8 @@ export default function TecnicosPage() {
       if (filters.categoria) {
         query = query.ilike('category', `%${filters.categoria}%`)
       }
-      if (filters.ciudad) {
-        query = query.eq('city', filters.ciudad)
+      if (filters.provincia) {
+        query = query.eq('province', filters.provincia)
       }
       
       const { data } = await query
@@ -41,6 +41,16 @@ export default function TecnicosPage() {
     
     fetchTechnicians()
   }, [filters])
+
+  // Lista de provincias de RD para el filtro
+  const provincias = [
+    'Distrito Nacional', 'Santo Domingo', 'Santiago', 'La Altagracia', 'La Romana',
+    'San Cristóbal', 'Puerto Plata', 'San Pedro de Macorís', 'Duarte', 'Espaillat',
+    'La Vega', 'Valverde', 'Barahona', 'Azua', 'Peravia', 'Monseñor Nouel',
+    'Sánchez Ramírez', 'María Trinidad Sánchez', 'Samana', 'El Seibo', 'Hato Mayor',
+    'Monte Plata', 'San Juan', 'Elías Piña', 'Dajabón', 'Santiago Rodríguez',
+    'Monte Cristi', 'Bahoruco', 'Independencia', 'Pedernales'
+  ]
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -66,21 +76,18 @@ export default function TecnicosPage() {
               <option>Pintura</option>
               <option>Limpieza</option>
               <option>Paneles solares</option>
+              <option>Tecnología</option>
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-sm mb-1">Ciudad</label>
+            <label className="block text-sm mb-1">Provincia</label>
             <select 
               className="w-full p-2 border rounded"
-              value={filters.ciudad}
-              onChange={(e) => setFilters({...filters, ciudad: e.target.value})}
+              value={filters.provincia}
+              onChange={(e) => setFilters({...filters, provincia: e.target.value})}
             >
               <option value="">Todas</option>
-              <option>Santo Domingo</option>
-              <option>Santiago</option>
-              <option>La Romana</option>
-              <option>Puerto Plata</option>
-              <option>Punta Cana</option>
+              {provincias.map(prov => <option key={prov}>{prov}</option>)}
             </select>
           </div>
           <div className="mb-4">

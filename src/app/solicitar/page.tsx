@@ -29,7 +29,7 @@ export default function SolicitarPage() {
     if (!error) {
       setSubmitted(true)
       setTimeout(() => {
-        window.location.href = `https://wa.me/18091234567?text=Solicitud%20de%20servicio%3A%20${formData.nombre}%20necesita%20${formData.servicio}`
+        window.location.href = `https://wa.me/18493587828?text=Solicitud%20de%20servicio%3A%20${formData.nombre}%20necesita%20${formData.servicio}`
       }, 2000)
     }
   }

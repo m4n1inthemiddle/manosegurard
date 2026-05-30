@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['images.unsplash.com', 'picsum.photos'],
+    unoptimized: true,   // ← Desactiva la optimización (evita el error de hostname)
+    // Si prefieres mantener la optimización, usa domains en lugar de remotePatterns:
+    // domains: ['images.unsplash.com', 'picsum.photos', 'rbzydlhuwkmiodrbjso.supabase.co'],
   },
   typescript: {
-    ignoreBuildErrors: true,   // 🔥 Evita que errores de TS detengan el build
+    ignoreBuildErrors: true,
   },
 }
 
