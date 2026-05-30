@@ -1,0 +1,12 @@
+<<<<<<< HEAD
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs"
+=======
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs"
+>>>>>>> a40b40e0c0fab772259b055423326813377792f3
+}
