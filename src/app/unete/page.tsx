@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
+export const dynamic = 'force-dynamic';
+// ... resto del código (tu formulario)
 
 // Lista de provincias de República Dominicana
 const dominicanProvinces = [
@@ -200,6 +202,7 @@ export default function UnetePage() {
         <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
           {loading ? 'Enviando...' : 'Enviar solicitud'}
         </button>
+        
       </form>
     </div>
   )

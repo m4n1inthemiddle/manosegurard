@@ -1,3 +1,4 @@
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { Technician } from '@/types'
@@ -24,7 +25,7 @@ export default function TechnicianCard({ technician }: TechnicianCardProps) {
             src={imagenUrl}
             alt={technician.name}
             fill
-            className="object-cover"
+            className="w-full h-full object-cover"
           />
         </div>
         <div className="p-4">
@@ -53,3 +54,5 @@ export default function TechnicianCard({ technician }: TechnicianCardProps) {
     </div>
   )
 }
+
+

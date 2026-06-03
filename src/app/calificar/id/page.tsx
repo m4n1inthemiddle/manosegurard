@@ -1,5 +1,6 @@
 // src/app/calificar/[id]/page.tsx
 'use client'
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useParams } from 'next/navigation'

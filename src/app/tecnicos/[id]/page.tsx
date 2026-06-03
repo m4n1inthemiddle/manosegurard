@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import Image from 'next/image'
 import Link from 'next/link'
+export const dynamic = 'force-dynamic';
+// ... resto del código (detalle del técnico)
 
 export default function TecnicoDetailPage({ params }: { params: { id: string } }) {
   const [technician, setTechnician] = useState<any>(null)
@@ -82,4 +84,5 @@ export default function TecnicoDetailPage({ params }: { params: { id: string } }
       )}
     </div>
   )
+
 }
