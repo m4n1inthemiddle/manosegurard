@@ -1,7 +1,7 @@
 'use client'
+export const dynamic = 'force-dynamic';
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-export const dynamic = 'force-dynamic';
 // ... resto del código (tu formulario)
 
 // Lista de provincias de República Dominicana
