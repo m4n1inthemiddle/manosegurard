@@ -1,13 +1,13 @@
 
 'use client'
 export const dynamic = 'force-dynamic';
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import { Technician } from '@/types'
 import TechnicianCard from '@/components/TechnicianCard'
 
-export default function TecnicosPage() {
+function TecnicosContent() {
   const searchParams = useSearchParams()
   const categoria = searchParams.get('categoria')
   
@@ -122,5 +122,13 @@ export default function TecnicosPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function TecnicosPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20">Cargando técnicos...</div>}>
+      <TecnicosContent />
+    </Suspense>
   )
 }
