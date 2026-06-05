@@ -10,13 +10,18 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@marsidev/react-turnstile": "^1.5.2",
     "@supabase/supabase-js": "^2.39.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.40.0",
     "next": "14.2.29",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
     "react-star-ratings": "^2.3.0",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

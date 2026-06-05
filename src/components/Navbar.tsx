@@ -1,129 +1,153 @@
-
 'use client'
+
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Bars3Icon, XMarkIcon, ShieldCheckIcon } from '@heroicons/react/24/outline'
+import { cn } from '@/lib/utils'
+
+const navLinks = [
+  { href: '/', label: 'Inicio' },
+  { href: '/nosotros', label: 'Nosotros' },
+  { href: '/servicios', label: 'Servicios' },
+  { href: '/tecnicos', label: 'Técnicos' },
+  { href: '/unete', label: 'Únete' },
+  { href: '/contacto', label: 'Contacto' },
+]
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
-  const navLinks = [
-    { href: '/', label: 'Inicio' },
-    { href: '/servicios', label: 'Servicios' },
-    { href: '/tecnicos', label: 'Técnicos' },
-    { href: '/unete', label: 'Únete' },
-    { href: '/contacto', label: 'Contacto' },
-  ]
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-  const isActive = (path: string) => pathname === path
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
+  const isActive = (path: string) =>
+    path === '/' ? pathname === '/' : pathname.startsWith(path)
 
   return (
     <>
-      {/* Barra de navegación principal (escritorio y base móvil) */}
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              ManoSeguraRD
-            </Link>
-
-            {/* Menú escritorio */}
-            <div className="hidden md:flex space-x-8">
-              {navLinks.map(link => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`relative px-1 py-2 transition-colors ${
-                    isActive(link.href)
-                      ? 'text-blue-600 font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-600 after:rounded-full'
-                      : 'text-gray-700 hover:text-blue-600'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Botón solicitar servicio (escritorio) */}
-            <Link
-              href="/solicitar"
-              className="hidden md:block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Solicitar servicio
-            </Link>
-
-            {/* Botón hamburguesa (móvil) */}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 focus:outline-none"
-            >
-              <Bars3Icon className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Menú lateral móvil (overlay) */}
-      <div
-        className={`fixed inset-0 z-50 transition-all duration-300 ${
-          isOpen ? 'visible' : 'invisible'
-        }`}
+      <header
+        className={cn(
+          'sticky top-0 z-50 transition-all duration-300',
+          scrolled
+            ? 'border-b border-slate-200/80 bg-white/80 shadow-soft backdrop-blur-xl'
+            : 'border-b border-transparent bg-white/60 backdrop-blur-md'
+        )}
       >
-        {/* Fondo semitransparente (cierra al hacer clic) */}
-        <div
-          className={`absolute inset-0 bg-black transition-opacity duration-300 ${
-            isOpen ? 'opacity-50' : 'opacity-0'
-          }`}
-          onClick={() => setIsOpen(false)}
-        />
+        <nav className="container-page flex h-16 items-center justify-between md:h-[4.5rem]">
+          <Link href="/" className="group flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-soft transition-transform group-hover:scale-105">
+              <ShieldCheckIcon className="h-5 w-5" />
+            </span>
+            <span className="font-display text-lg font-bold tracking-tight text-slate-900">
+              Mano<span className="text-brand-600">Segura</span>RD
+            </span>
+          </Link>
 
-        {/* Panel lateral derecho */}
-        <div
-          className={`absolute right-0 top-0 h-full w-64 bg-white shadow-xl transform transition-transform duration-300 ${
-            isOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
-          {/* Cabecera del menú con botón cerrar */}
-          <div className="flex justify-between items-center p-4 border-b">
-            <span className="text-lg font-semibold text-gray-800">Menú</span>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              <XMarkIcon className="h-5 w-5 text-gray-600" />
-            </button>
-          </div>
-
-          {/* Enlaces del menú */}
-          <div className="flex flex-col p-4 space-y-2">
-            {navLinks.map(link => (
+          <div className="hidden items-center gap-1 lg:flex">
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`px-3 py-2 rounded-lg transition-colors ${
+                className={cn(
+                  'relative rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                   isActive(link.href)
-                    ? 'bg-blue-50 text-blue-600 font-semibold border-l-4 border-blue-600'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                    ? 'text-brand-600'
+                    : 'text-slate-600 hover:text-slate-900'
+                )}
               >
                 {link.label}
+                {isActive(link.href) && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    className="absolute inset-x-2 -bottom-0.5 h-0.5 rounded-full bg-brand-600"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
               </Link>
             ))}
-            {/* Botón Solicitar servicio dentro del menú móvil */}
-            <Link
-              href="/solicitar"
-              onClick={() => setIsOpen(false)}
-              className="mt-4 bg-blue-600 text-white text-center px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
-            >
+          </div>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <Link href="/unete" className="btn-ghost text-sm">
+              Soy técnico
+            </Link>
+            <Link href="/solicitar" className="btn-primary text-sm">
               Solicitar servicio
             </Link>
           </div>
-        </div>
-      </div>
+
+          <button
+            onClick={() => setIsOpen(true)}
+            className="rounded-xl p-2 text-slate-600 transition-colors hover:bg-slate-100 lg:hidden"
+            aria-label="Abrir menú"
+          >
+            <Bars3Icon className="h-6 w-6" />
+          </button>
+        </nav>
+      </header>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+              onClick={() => setIsOpen(false)}
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              className="fixed right-0 top-0 z-50 flex h-full w-[min(100%,20rem)] flex-col bg-white shadow-2xl lg:hidden"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 p-4">
+                <span className="font-display font-semibold text-slate-900">Menú</span>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-lg p-2 hover:bg-slate-100"
+                  aria-label="Cerrar menú"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="flex flex-1 flex-col gap-1 p-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      'rounded-xl px-4 py-3 text-sm font-medium transition-colors',
+                      isActive(link.href)
+                        ? 'bg-brand-50 text-brand-700'
+                        : 'text-slate-700 hover:bg-slate-50'
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <Link href="/solicitar" className="btn-primary mt-4 w-full">
+                  Solicitar servicio
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   )
 }

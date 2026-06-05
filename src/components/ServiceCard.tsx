@@ -1,26 +1,32 @@
+'use client'
+
 import Link from 'next/link'
 import * as Icons from '@heroicons/react/24/outline'
+import { ArrowRightIcon } from '@heroicons/react/24/solid'
 
 interface ServiceCardProps {
   name: string
-  iconName: string   // cambiamos de 'icon' a 'iconName'
+  iconName: string
   description: string
 }
 
 export default function ServiceCard({ name, iconName, description }: ServiceCardProps) {
-  // Mapear el nombre del string al componente real
-  const IconComponent = (Icons as any)[iconName]
+  const IconComponent = (Icons as Record<string, (props: { className?: string }) => JSX.Element>)[iconName]
 
   return (
-    <div className="card p-6 text-center hover:transform hover:scale-105 transition-transform">
-      <div className="flex justify-center mb-4">
-        {IconComponent && <IconComponent className="w-12 h-12 text-blue-600 mx-auto" />}
-      </div>
-      <h3 className="text-xl font-semibold mb-2">{name}</h3>
-      <p className="text-gray-600 text-sm mb-4">{description}</p>
-      <Link href={`/tecnicos?categoria=${name.toLowerCase()}`} className="text-blue-600 hover:text-blue-800">
-        Ver técnicos →
-      </Link>
-    </div>
+    <Link
+      href={`/tecnicos?categoria=${encodeURIComponent(name.toLowerCase())}`}
+      className="card-interactive group flex h-full flex-col p-6"
+    >
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-600 group-hover:text-white">
+          {IconComponent && <IconComponent className="h-6 w-6" />}
+        </div>
+        <h3 className="font-display text-lg font-semibold text-slate-900">{name}</h3>
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{description}</p>
+        <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-600 transition-gap group-hover:gap-2">
+          Ver técnicos
+          <ArrowRightIcon className="h-4 w-4" />
+        </span>
+    </Link>
   )
 }

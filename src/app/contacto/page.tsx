@@ -1,85 +1,175 @@
-// src/app/contacto/page.tsx
 'use client'
-export const dynamic = 'force-dynamic';
-import { useState } from 'react'
-import { supabase } from '@/lib/supabaseClient'
+export const dynamic = 'force-dynamic'
+
+import { useState, useRef } from 'react'
+import PageHero from '@/components/ui/PageHero'
+import FadeIn from '@/components/ui/FadeIn'
+import SuccessMessage from '@/components/ui/SuccessMessage'
+import {
+  PhoneIcon,
+  EnvelopeIcon,
+  ChatBubbleLeftRightIcon,
+  ClockIcon,
+} from '@heroicons/react/24/outline'
+import { ADMIN_PHONE_DISPLAY, ADMIN_PHONE_TEL, buildAdminWhatsAppUrl } from '@/lib/contact'
+import { verifyCaptchaToken } from '@/lib/captcha'
+import TurnstileField, { type TurnstileFieldHandle } from '@/components/TurnstileField'
+
+const contactInfo = [
+  { icon: PhoneIcon, title: 'Teléfono', value: ADMIN_PHONE_DISPLAY, href: `tel:${ADMIN_PHONE_TEL}` },
+  { icon: ChatBubbleLeftRightIcon, title: 'WhatsApp', value: ADMIN_PHONE_DISPLAY, href: buildAdminWhatsAppUrl() },
+  { icon: EnvelopeIcon, title: 'Email', value: 'info@manosegurard.com', href: 'mailto:info@manosegurard.com' },
+  { icon: ClockIcon, title: 'Horario', value: 'Lun–Dom: 8am – 8pm', href: undefined },
+]
 
 export default function ContactoPage() {
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
     telefono: '',
-    mensaje: ''
+    mensaje: '',
   })
   const [enviado, setEnviado] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const turnstileRef = useRef<TurnstileFieldHandle>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Aquí puedes guardar el mensaje en una tabla "contact_messages" si lo deseas
-    // Por ahora, simulamos envío y redirigimos a WhatsApp
+    setErrorMsg(null)
+
+    const captcha = await verifyCaptchaToken(captchaToken)
+    if (!captcha.ok) {
+      setErrorMsg(captcha.message || 'Verificación requerida.')
+      turnstileRef.current?.reset()
+      return
+    }
+
     const mensajeWhatsApp = `Hola, soy ${formData.nombre}. ${formData.mensaje}`
-    window.location.href = `https://wa.me/18493587828?text=${encodeURIComponent(mensajeWhatsApp)}`
+    window.location.href = buildAdminWhatsAppUrl(mensajeWhatsApp)
     setEnviado(true)
   }
 
   if (enviado) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="bg-green-100 text-green-700 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-2">¡Mensaje enviado!</h2>
-          <p>Te contactaremos a la brevedad por WhatsApp.</p>
-        </div>
-      </div>
+      <SuccessMessage
+        title="¡Mensaje enviado!"
+        description="Te contactaremos a la brevedad por WhatsApp."
+      />
     )
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-center mb-4">Contacto</h1>
-      <p className="text-center text-gray-600 mb-8">¿Tienes dudas o sugerencias? Escríbenos y te responderemos rápido.</p>
+    <>
+      <PageHero
+        badge="Contacto"
+        title="Estamos aquí para ayudarte"
+        description="¿Tienes dudas o sugerencias? Escríbenos y te responderemos rápido."
+      />
 
-      <div className="grid md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-blue-50 p-6 rounded-lg">
-          <h3 className="font-bold text-lg mb-2">📞 Teléfono</h3>
-          <p>+1 849 358 7828</p>
-        </div>
-        <div className="bg-blue-50 p-6 rounded-lg">
-          <h3 className="font-bold text-lg mb-2">💬 WhatsApp</h3>
-          <p>+1 849 358 7828</p>
-        </div>
-        <div className="bg-blue-50 p-6 rounded-lg">
-          <h3 className="font-bold text-lg mb-2">✉️ Email</h3>
-          <p>info@manosegurard.com</p>
-        </div>
-        <div className="bg-blue-50 p-6 rounded-lg">
-          <h3 className="font-bold text-lg mb-2">📍 Horario</h3>
-          <p>Lun-Dom: 8am - 8pm</p>
-        </div>
-      </div>
+      <section className="section-padding bg-white">
+        <div className="container-page">
+          <div className="grid gap-12 lg:grid-cols-5">
+            <div className="grid gap-4 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-1">
+              {contactInfo.map((item, i) => (
+                <FadeIn key={item.title} delay={i * 0.06}>
+                  <div className="card p-5">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                      <item.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-semibold text-slate-900">{item.title}</h3>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                        rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        className="mt-1 text-sm text-brand-600 hover:text-brand-700"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="mt-1 text-sm text-slate-600">{item.value}</p>
+                    )}
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md">
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Nombre completo *</label>
-          <input type="text" required className="w-full p-3 border rounded-lg"
-            value={formData.nombre} onChange={(e) => setFormData({...formData, nombre: e.target.value})} />
+            <FadeIn delay={0.15} className="lg:col-span-3">
+              <form onSubmit={handleSubmit} className="card p-8 md:p-10">
+                <h2 className="font-display text-xl font-semibold text-slate-900">Envíanos un mensaje</h2>
+                <p className="mt-2 text-sm text-slate-600">Te responderemos por WhatsApp lo antes posible.</p>
+
+                <div className="mt-8 space-y-5">
+                  {errorMsg && (
+                    <div
+                      className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                      role="alert"
+                    >
+                      {errorMsg}
+                    </div>
+                  )}
+                  <div>
+                    <label className="label-field" htmlFor="nombre">
+                      Nombre completo *
+                    </label>
+                    <input
+                      id="nombre"
+                      type="text"
+                      required
+                      className="input-field"
+                      value={formData.nombre}
+                      onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="label-field" htmlFor="email">
+                      Correo electrónico
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      className="input-field"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="label-field" htmlFor="telefono">
+                      Teléfono *
+                    </label>
+                    <input
+                      id="telefono"
+                      type="tel"
+                      required
+                      className="input-field"
+                      value={formData.telefono}
+                      onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="label-field" htmlFor="mensaje">
+                      Mensaje *
+                    </label>
+                    <textarea
+                      id="mensaje"
+                      rows={4}
+                      required
+                      className="input-field resize-none"
+                      value={formData.mensaje}
+                      onChange={(e) => setFormData({ ...formData, mensaje: e.target.value })}
+                    />
+                  </div>
+                  <TurnstileField ref={turnstileRef} onTokenChange={setCaptchaToken} />
+                  <button type="submit" className="btn-primary w-full">
+                    Enviar mensaje
+                  </button>
+                </div>
+              </form>
+            </FadeIn>
+          </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Correo electrónico</label>
-          <input type="email" className="w-full p-3 border rounded-lg"
-            value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Teléfono *</label>
-          <input type="tel" required className="w-full p-3 border rounded-lg"
-            value={formData.telefono} onChange={(e) => setFormData({...formData, telefono: e.target.value})} />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Mensaje *</label>
-          <textarea rows={4} required className="w-full p-3 border rounded-lg"
-            value={formData.mensaje} onChange={(e) => setFormData({...formData, mensaje: e.target.value})} />
-        </div>
-        <button type="submit" className="btn-primary w-full">Enviar mensaje</button>
-      </form>
-    </div>
+      </section>
+    </>
   )
 }
