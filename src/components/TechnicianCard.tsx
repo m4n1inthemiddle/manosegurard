@@ -54,6 +54,11 @@ export default function TechnicianCard({ technician }: TechnicianCardProps) {
               </span>
             </div>
             <p className="mt-2 text-sm text-slate-500">{technician.experience} años de experiencia</p>
+            {technician.bio && (
+              <p className="mt-2 line-clamp-2 text-sm text-slate-500 italic">
+                &ldquo;{technician.bio}&rdquo;
+              </p>
+            )}
           </div>
         </Link>
         <div className="border-t border-slate-100 px-5 pb-5 pt-0">

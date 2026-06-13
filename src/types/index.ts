@@ -8,6 +8,7 @@ export interface Technician {
   experience: number
   photo: string
   photo_url?: string
+  certificates_url?: string
   province?: string
   sector?: string
   bio: string
@@ -47,3 +48,4 @@ export interface PendingTechnician {
   certificates_url?: string
   certifications?: string
 }
+
